@@ -1,18 +1,20 @@
-import sys,os
 import PySimpleGUI as sg
+import os
 import regex as re
-global video_suffix,subtitle_suffix,roma2Int
+import sys
 
-srcDir=""
-dstDir=""
+global video_suffix, subtitle_suffix, roma2Int
+
+srcDir = ""
+dstDir = ""
 subtitle_suffix = ["ass", "srt"]
 video_suffix = ["mp4", "mkv"]
-roma2Int={
-    "II":2,
-    "III":3,
-    "IV":4,
-    "V":5,
-    "VI":6
+roma2Int = {
+    "II": 2,
+    "III": 3,
+    "IV": 4,
+    "V": 5,
+    "VI": 6
 }
 
 if len(sys.argv) > 1:
@@ -29,20 +31,22 @@ class mainwindow:
     title = ""
     season = ""
     fullName = ""
-    def __init__(self,srcDir,dstDir):
+
+    def __init__(self, srcDir: str, dstDir: str):
         self.layout = [[sg.Text('　源目录：'), sg.InputText(srcDir, key='srcDir'),
-                   sg.FolderBrowse('选择', key='chSrcDir', initial_folder=sys.path[0], enable_events=True, target='srcDir',
-                                   change_submits=True)],
-                    [sg.Text('目标目录：'), sg.InputText(dstDir, key='dstDir'),
+                        sg.FolderBrowse('选择', key='chSrcDir', initial_folder=sys.path[0], enable_events=True,
+                                        target='srcDir',
+                                        change_submits=True)],
+                       [sg.Text('目标目录：'), sg.InputText(dstDir, key='dstDir'),
                         sg.FolderBrowse('选择', key='chDstDir', initial_folder=sys.path[0], enable_events=True,
                                         target='dstDir',
                                         change_submits=True)],
-                  [sg.Text('　字幕组：'), sg.InputText(key='subOrg')],
-                  [sg.Text('　　标题：'), sg.InputText(key='title')],
-                  [sg.Text('　　　季：'), sg.InputText(key='season')],
-                  [sg.Button('解析', enable_events=True), sg.Button('生成硬链接', enable_events=True)]]
+                       [sg.Text('　字幕组：'), sg.InputText(key='subOrg')],
+                       [sg.Text('　　标题：'), sg.InputText(key='title')],
+                       [sg.Text('　　　季：'), sg.InputText(key='season')],
+                       [sg.Button('解析', enable_events=True), sg.Button('生成硬链接', enable_events=True)]]
 
-    def reset(self):
+    def reset(self) -> None:
         self.subOrg = ""
         self.fullName = ""
         self.title = ""
@@ -51,27 +55,29 @@ class mainwindow:
         self.videoFiles.clear()
         self.subTitleFiles.clear()
 
-    def makeLink(self,srcDir,dstDir):
-        dstDir=os.path.join(dstDir, self.fullName)
-        if self.videoFiles.__len__()>0:
+    def makeLink(self, srcDir: str, dstDir: str) -> None:
+        dstDir = os.path.join(dstDir, self.fullName)
+        if self.videoFiles.__len__() > 0:
             os.makedirs(dstDir)
-        if len(self.videoFiles) != len(self.subTitleFiles):
-            self.subTitleFiles=self.getOneLangSubtitleFiles()
+        if len(self.videoFiles) != len(self.subTitleFiles) and len(self.subTitleFiles) > 0:
+            self.subTitleFiles = self.getOneLangSubtitleFiles()
         for file in self.videoFiles:
-            episode=self.getEpisode(file)
-            if episode=="":
+            episode = self.getEpisode(file)
+            if episode == "":
                 print('获取集数失败')
                 return
-            suffix=os.path.splitext(file)[-1]
-            os.link(os.path.join(srcDir,file),os.path.join(dstDir,self.title+" S"+str(self.season).zfill(2)+"E"+episode.zfill(2)+suffix))
+            suffix = os.path.splitext(file)[-1]
+            os.link(os.path.join(srcDir, file), os.path.join(dstDir, self.title + " S" + str(self.season).zfill(
+                2) + "E" + episode.zfill(2) + suffix))
         for file in self.subTitleFiles:
-            episode=self.getEpisode(file)
-            if episode=="":
+            episode = self.getEpisode(file)
+            if episode == "":
                 print('获取集数失败')
                 return
-            lang=file.split(".")[-2]
-            suffix=os.path.splitext(file)[-1]
-            os.link(os.path.join(srcDir,file),os.path.join(dstDir,self.title+" S"+str(self.season).zfill(2)+"E"+episode.zfill(2)+"."+lang+suffix))
+            lang = file.split(".")[-2]
+            suffix = os.path.splitext(file)[-1]
+            os.link(os.path.join(srcDir, file), os.path.join(dstDir, self.title + " S" + str(self.season).zfill(
+                2) + "E" + episode.zfill(2) + "." + lang + suffix))
 
     def analyze(self,path: str)->None:
         if len(path)>0:
@@ -90,7 +96,7 @@ class mainwindow:
                 self.window['title'].update(self.title)
                 self.window['season'].update(self.season)
 
-    def getOneLangSubtitleFiles(self):
+    def getOneLangSubtitleFiles(self) -> List:
         subTitleFiles = []
         lang = []
         for i in range(0, 3):
@@ -120,47 +126,44 @@ class mainwindow:
                 subTitleFiles.append(subTitleFile)
         return subTitleFiles
 
-    def getEpisode(self,fileName):
+    def getEpisode(self, fileName) -> str:
         regex = r'(?<=[\s\[\]\(\)])\d{2,3}(?=[\s\[\]\)\(])'
         episode = re.search(regex, fileName)
         if episode is not None:
             return episode.group().strip()
         return ""
 
-    def getSubOrg(self,fileName:str)->str:
-        regex='(?<=^\[).+?(?=\])'
-        subOrg=re.search(regex,fileName)
+    def getSubOrg(self, fileName: str) -> str:
+        regex = '(?<=^\[).+?(?=\])'
+        subOrg = re.search(regex, fileName)
         if subOrg is not None:
             return subOrg.group().strip()
         return ""
 
-    def getFullName(self,fileName):
-        regex=r'(?<=\]|\))(?<!\s+)[^\[\]\.\(\)()]+?(?=\[|\(|(\d))'
-        fullName=re.search(regex,fileName)
+    def getFullName(self, fileName) -> str:
+        regex = r'(?<=\]|\))(?<!\s+)[^\[\]\.\(\)()]+?(?=\[|\(|(\d))'
+        fullName = re.search(regex, fileName)
         if fullName is not None:
             return fullName.group().strip()
         return ""
 
-    def getTitle(self,fullName:str)->str:
-        regex=r'(II|III|IV|V|VI)\s?$'
-        title=re.sub(regex,"",fullName)
-        if title is not None:
-            return title.strip()
-        return ""
+    def getTitle(self, fullName: str) -> str:
+        regex = r'(II|III|IV|V|VI)\s?$'
+        title = re.sub(regex, "", fullName)
+        title.strip()
 
-    def getSeason(self,fullName:str)->str:
-        if fullName.replace(" ","").__len__()>0:
-            regex=r'(II|III|IV|V|VI)\s?$'
-            season=re.search(regex,fullName)
+    def getSeason(self, fullName: str) -> str:
+        if fullName.replace(" ", "").__len__() > 0:
+            regex = r'(II|III|IV|V|VI)\s?$'
+            season = re.search(regex, fullName)
             if season is not None:
-                season=season.group()
+                season = season.group()
                 if season in roma2Int:
                     return roma2Int[season].__str__()
             return "1"
         return ""
 
-
-    def start(self)->None:
+    def start(self) -> None:
         self.window = sg.Window('PT_Refine', self.layout)
         while True:
             event, values = self.window.read()
@@ -168,7 +171,7 @@ class mainwindow:
                 self.reset()
                 self.analyze(values['srcDir'])
             elif event == '生成硬链接':
-                self.makeLink(values['srcDir'],values['dstDir'])
+                self.makeLink(values['srcDir'], values['dstDir'])
                 print('生成完毕')
             elif event == sg.WIN_CLOSED:
                 exit(0)
