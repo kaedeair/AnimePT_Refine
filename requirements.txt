@@ -1,2 +1,4 @@
-PySimpleGUI
+PyQt5-stubs==5.15.2.0
+pyuic5-tool
+pyqt5-tools
 regex

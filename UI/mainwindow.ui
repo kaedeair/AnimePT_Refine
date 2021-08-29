@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+    <class>AnimePT_Refine</class>
+    <widget class="QMainWindow" name="AnimePT_Refine">
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>910</width>
+                <height>245</height>
+            </rect>
+        </property>
+        <property name="windowTitle">
+            <string>AnimePT_Refine</string>
+        </property>
+        <widget class="QWidget" name="centralwidget">
+            <layout class="QVBoxLayout" name="verticalLayout_2">
+                <item>
+                    <layout class="QVBoxLayout" name="verticalLayout" stretch="0,1">
+                        <property name="sizeConstraint">
+                            <enum>QLayout::SetDefaultConstraint</enum>
+                        </property>
+                        <item>
+                            <layout class="QGridLayout" name="gridLayout" rowminimumheight="0,0,0,0,0,0">
+                                <property name="sizeConstraint">
+                                    <enum>QLayout::SetDefaultConstraint</enum>
+                                </property>
+                                <property name="leftMargin">
+                                    <number>0</number>
+                                </property>
+                                <property name="spacing">
+                                    <number>6</number>
+                                </property>
+                                <item row="1" column="0">
+                                    <widget class="QLabel" name="label_dstDir">
+                                        <property name="text">
+                                            <string>Destination Folder:</string>
+                                        </property>
+                                        <property name="alignment">
+                                            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                                        </property>
+                                    </widget>
+                                </item>
+                                <item row="2" column="1">
+                                    <widget class="QLineEdit" name="textField_subtitleDir"/>
+                                </item>
+                                <item row="2" column="0">
+                                    <widget class="QLabel" name="label_subTitleDir">
+                                        <property name="text">
+                                            <string>Subtitle Folder:</string>
+                                        </property>
+                                        <property name="alignment">
+                                            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                                        </property>
+                                    </widget>
+                                </item>
+                                <item row="5" column="0">
+                                    <widget class="QLabel" name="label_season">
+                                        <property name="text">
+                                            <string>Season:</string>
+                                        </property>
+                                        <property name="alignment">
+                                            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                                        </property>
+                                    </widget>
+                                </item>
+                                <item row="1" column="3">
+                                    <widget class="QPushButton" name="btn_dstDir">
+                                        <property name="text">
+                                            <string>Choose</string>
+                                        </property>
+                                    </widget>
+                                </item>
+                                <item row="4" column="0">
+                                    <widget class="QLabel" name="label_title">
+                                        <property name="text">
+                                            <string>Title:</string>
+                                        </property>
+                                        <property name="alignment">
+                                            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                                        </property>
+                                    </widget>
+                                </item>
+                                <item row="4" column="1">
+                                    <widget class="QLineEdit" name="textField_title"/>
+                                </item>
+                                <item row="0" column="0">
+                                    <widget class="QLabel" name="label_srcDir">
+                                        <property name="text">
+                                            <string>Source Folder:</string>
+                                        </property>
+                                        <property name="alignment">
+                                            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                                        </property>
+                                    </widget>
+                                </item>
+                                <item row="0" column="3">
+                                    <widget class="QPushButton" name="btn_srcDir">
+                                        <property name="text">
+                                            <string>Choose</string>
+                                        </property>
+                                    </widget>
+                                </item>
+                                <item row="5" column="1">
+                                    <widget class="QLineEdit" name="textField_season"/>
+                                </item>
+                                <item row="3" column="1">
+                                    <widget class="QLineEdit" name="textField_fansub"/>
+                                </item>
+                                <item row="1" column="1">
+                                    <widget class="QLineEdit" name="textField_dstDir"/>
+                                </item>
+                                <item row="3" column="0">
+                                    <widget class="QLabel" name="label_fansub">
+                                        <property name="text">
+                                            <string>Fansub:</string>
+                                        </property>
+                                        <property name="alignment">
+                                            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                                        </property>
+                                    </widget>
+                                </item>
+                                <item row="0" column="1">
+                                    <widget class="QLineEdit" name="textField_srcDir"/>
+                                </item>
+                                <item row="2" column="3">
+                                    <widget class="QPushButton" name="btn_subtitle">
+                                        <property name="text">
+                                            <string>Choose</string>
+                                        </property>
+                                    </widget>
+                                </item>
+                            </layout>
+                        </item>
+                        <item>
+                            <layout class="QHBoxLayout" name="horizontalLayout">
+                                <item>
+                                    <widget class="QPushButton" name="btn_anazlyze">
+                                        <property name="text">
+                                            <string>Analyze</string>
+                                        </property>
+                                    </widget>
+                                </item>
+                                <item>
+                                    <widget class="QPushButton" name="btn_makeLink">
+                                        <property name="text">
+                                            <string>Make Link</string>
+                                        </property>
+                                    </widget>
+                                </item>
+                            </layout>
+                        </item>
+                    </layout>
+                </item>
+            </layout>
+        </widget>
+    </widget>
+    <resources/>
+    <connections/>
+</ui>
