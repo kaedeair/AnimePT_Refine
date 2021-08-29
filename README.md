@@ -19,4 +19,15 @@ pip install -r requirements.txt
 python UpdateUI.py
 ```
 
+3.安装中文翻译需要ts文件和QtLinguist工具
+
+例如：
+
+```angular2html
+cd UI
+pylupdate5  mainwindow.py -ts ../language/zh_CN.ts
+```
+
+使用QtLinguist发布功能得到qm文件，在main.py里更改文件路径即可生效
+
 源文件夹和目标文件夹需要处于同一分区
