@@ -1,5 +1,3 @@
-import abc
-
 from Analyzer.BaseAnalyzer import BaseAnalyzer
 import regex as re
 
