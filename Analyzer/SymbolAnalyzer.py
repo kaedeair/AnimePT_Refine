@@ -7,6 +7,14 @@ symbolDict = {
 }
 
 
+class SplitArgument:
+    offset = 0
+    stack = []
+
+    def __init__(self, fileName: str):
+        self.fileName = fileName
+
+
 class SymbolAnalyzer(BaseAnalyzer):
 
     def _analyze(self):
@@ -14,31 +22,42 @@ class SymbolAnalyzer(BaseAnalyzer):
 
     @staticmethod
     def splitBySymbol(fileName: str) -> list:
-        stack = []
+        args = SplitArgument(fileName)
+        return SymbolAnalyzer.__split(args)
+
+    @staticmethod
+    def __split(args: SplitArgument) -> list:
         result = []
         tmp = ""
-        for string in fileName:
+        while args.offset < len(args.fileName):
+            string = args.fileName[args.offset]
             if string in symbolDict.keys():
-                stack.append(symbolDict[string])
-                if len(stack) > 1:
-                    tmp += string
-                else:
-                    if len(tmp) > 0:
-                        result.append(tmp)
-                        tmp = ""
+                args.stack.append(symbolDict[string])
+                if len(tmp) > 0:
+                    result.append(tmp)
+                    tmp = ""
+                args.offset += 1
+                result.append(SymbolAnalyzer.__split(args))
             elif string in symbolDict.values():
-                symbol = stack.pop()
+                symbol = args.stack.pop()
                 if symbol != string:
                     raise "symbol not match!"
-                if len(stack) > 0:
-                    tmp += string
-                else:
-                    result.append(SymbolAnalyzer.splitBySymbol(tmp))
-                    tmp = ""
+                break
             else:
                 tmp += string
+            args.offset += 1
         if len(tmp) > 0:
             result.append(tmp)
-        if len(result) == 1:
-            return result.pop()
         return result
+
+    def _getFansub(fileName: str) -> str:
+        pass
+
+    def _getFullName(fileName: str) -> str:
+        pass
+
+    def _getSeason(fullName: str) -> str:
+        pass
+
+    def _getTitle(fullName: str) -> str:
+        pass
