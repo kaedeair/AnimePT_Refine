@@ -11,6 +11,7 @@ class BaseAnalyzer(metaclass=abc.ABCMeta):
     video_suffix = ["mp4", "mkv"]
     videoFileArr = []
     subtitleFileArr = []
+    subtitleDir = ""
 
     def __init__(self, srcDir: str):
         self.srcDir = srcDir
@@ -19,11 +20,20 @@ class BaseAnalyzer(metaclass=abc.ABCMeta):
 
     def addFile(self):
         if len(self.srcDir) > 0:
+            rootDir = []
             for item in os.listdir(self.srcDir):
-                if os.path.splitext(item)[-1].replace(".", "") in BaseAnalyzer.video_suffix:
+                filePath = os.path.join(self.srcDir, item)
+                if os.path.isdir(filePath):
+                    rootDir.append(filePath)
+                elif os.path.splitext(filePath)[-1].replace(".", "") in BaseAnalyzer.video_suffix:
                     self.videoFileArr.append(item)
-                elif os.path.splitext(item)[-1].replace(".", "") in BaseAnalyzer.subtitle_suffix:
+                elif os.path.splitext(filePath)[-1].replace(".", "") in BaseAnalyzer.subtitle_suffix:
                     self.subtitleFileArr.append(item)
+            if len(self.subtitleFileArr) == 0:
+                self._searchSubtitleDir(rootDir)
+            else:
+                self.subtitleDir = self.srcDir
+            self.__getOneTypeSubtitleFiles()
 
     @abc.abstractmethod
     def _analyze(self):
@@ -60,3 +70,49 @@ class BaseAnalyzer(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def _getSeason(fullName: str) -> str:
         pass
+
+    def _searchSubtitleDir(self, rootDir: str) -> str:
+        for folder in rootDir:
+            folderPath = os.path.join(rootDir, folder)
+            for item in os.listdir(folderPath):
+                filePath = os.path.join(rootDir, folder, item)
+                if os.path.isdir(filePath):
+                    result = BaseAnalyzer._searchSubtitleDir(filePath)
+                    if result != "":
+                        return result
+                elif os.path.splitext(filePath)[-1].replace(".", "") in BaseAnalyzer.subtitle_suffix:
+                    self.subtitleFileArr.append(filePath)
+            if len(self.subtitleFileArr) > 0:
+                return folderPath
+        return ""
+
+    def __getOneTypeSubtitleFiles(self) -> None:
+        subTitleFiles = []
+        lang = []
+        arrLen = len(self.subtitleFileArr)
+        for i in range(0, arrLen if arrLen < 3 else 3):
+            try:
+                langTag = self.subTitleFiles[i].split('.')[-2]
+                if langTag == 'zh':
+                    lang.insert(1, langTag)
+                    break
+                elif langTag == 'sc':
+                    lang.insert(0, langTag)
+                    break
+                elif langTag == 'tc':
+                    lang.insert(2, langTag)
+                    break
+                elif langTag == 'chs':
+                    lang.insert(0, langTag)
+                    break
+                elif langTag == 'cht':
+                    lang.insert(2, langTag)
+                    break
+                assert lang.count() != 0
+            except:
+                print("不能识别字幕文件!")
+                return
+        for subTitleFile in self.subTitleFiles:
+            if subTitleFile.split('.')[-2] == lang[0]:
+                subTitleFiles.append(subTitleFile)
+        self.subtitleFileArr = subTitleFiles
