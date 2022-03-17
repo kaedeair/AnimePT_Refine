@@ -1,2 +1,4 @@
 UI/*.py
 config.ini
+*.pyc
+*_pycache_
