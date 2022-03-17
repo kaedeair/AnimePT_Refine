@@ -8,12 +8,10 @@ symbolDict = {
 
 
 class SplitArgument:
-    offset = 0
-    stack = []
-
     def __init__(self, fileName: str):
         self.fileName = fileName
-
+        self.offset = 0
+        self.stack = []
 
 class SymbolAnalyzer(BaseAnalyzer):
 
@@ -34,7 +32,7 @@ class SymbolAnalyzer(BaseAnalyzer):
             if string in symbolDict.keys():
                 args.stack.append(symbolDict[string])
                 if len(tmp) > 0:
-                    result.append(tmp)
+                    result.append(tmp.strip())
                     tmp = ""
                 args.offset += 1
                 result.append(SymbolAnalyzer.__split(args))
@@ -47,7 +45,7 @@ class SymbolAnalyzer(BaseAnalyzer):
                 tmp += string
             args.offset += 1
         if len(tmp) > 0:
-            result.append(tmp)
+            result.append(tmp.strip())
         return result
 
     def _getFansub(fileName: str) -> str:

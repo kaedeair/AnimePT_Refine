@@ -2,19 +2,18 @@ import abc, os
 
 
 class BaseAnalyzer(metaclass=abc.ABCMeta):
-    srcDir = ""
-    fansub = ""
-    fullName = ""
-    title = ""
-    season = ""
     subtitle_suffix = ["ass", "srt"]
     video_suffix = ["mp4", "mkv"]
-    videoFileArr = []
-    subtitleFileArr = []
-    subtitleDir = ""
 
     def __init__(self, srcDir: str):
         self.srcDir = srcDir
+        self.fansub = ""
+        self.fullName = ""
+        self.title = ""
+        self.season = ""
+        self.videoFileArr = []
+        self.subtitleFileArr = []
+        self.subtitleDir = ""
         self.addFile()
         self._analyze()
 
@@ -91,8 +90,11 @@ class BaseAnalyzer(metaclass=abc.ABCMeta):
         lang = []
         arrLen = len(self.subtitleFileArr)
         for i in range(0, arrLen if arrLen < 3 else 3):
+            fileNameSection=self.subtitleFileArr[i].split('.')
+            if len(fileNameSection)<3:
+                return
             try:
-                langTag = self.subTitleFiles[i].split('.')[-2]
+                langTag = self.subtitleFileArr[i].split('.')[-2]
                 if langTag == 'zh':
                     lang.insert(1, langTag)
                     break
@@ -108,11 +110,11 @@ class BaseAnalyzer(metaclass=abc.ABCMeta):
                 elif langTag == 'cht':
                     lang.insert(2, langTag)
                     break
-                assert lang.count() != 0
+                assert len(lang) != 0
             except:
                 print("不能识别字幕文件!")
                 return
-        for subTitleFile in self.subTitleFiles:
+        for subTitleFile in self.subtitleFileArr:
             if subTitleFile.split('.')[-2] == lang[0]:
                 subTitleFiles.append(subTitleFile)
         self.subtitleFileArr = subTitleFiles
